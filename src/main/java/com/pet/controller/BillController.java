@@ -3,6 +3,7 @@ package com.pet.controller;
 import com.pet.dto.request.CategoryRequest;
 import com.pet.dto.request.CheckoutRequest;
 import com.pet.dto.response.CheckoutResponse;
+import com.pet.dto.response.Statistic;
 import com.pet.entity.Bill;
 import com.pet.entity.Category;
 import com.pet.service.IBillService;
@@ -25,11 +26,6 @@ public class BillController {
     public ResponseEntity<Boolean> addBill(@Valid @RequestBody CheckoutRequest checkoutRequest){
         return new ResponseEntity<>(billService.addBill(checkoutRequest), HttpStatus.CREATED);
     }
-
-    @GetMapping("/get/{id}")
-    public ResponseEntity<CheckoutResponse> getBill(@PathVariable Long id){
-        return new ResponseEntity<>(billService.getBillById(id), HttpStatus.OK);
-    }
     @GetMapping("/active/{id}")
     public ResponseEntity<Boolean> acceptBill(@PathVariable Long id){
         return new ResponseEntity<>(billService.acceptBill(id), HttpStatus.OK);
@@ -39,8 +35,22 @@ public class BillController {
     public ResponseEntity<Boolean> cancelBill(@PathVariable Long id){
         return new ResponseEntity<>(billService.cancelBill(id), HttpStatus.OK);
     }
-    @GetMapping("/get-all")
-    public ResponseEntity<List<CheckoutResponse>> getBillAll(){
-        return new ResponseEntity<>(billService.getAll(), HttpStatus.OK);
+    @GetMapping("/get/un-check")
+    public ResponseEntity<List<CheckoutResponse>> getBillsUncheck(){
+        return new ResponseEntity<>(billService.getBillsUnCheck(), HttpStatus.OK);
+    }
+
+    @GetMapping("/get/active")
+    public ResponseEntity<List<CheckoutResponse>> getBillsActive(){
+        return new ResponseEntity<>(billService.getBillsActive(), HttpStatus.OK);
+    }
+    @GetMapping("/get/cancel")
+    public ResponseEntity<List<CheckoutResponse>> getBillsCancel(){
+        return new ResponseEntity<>(billService.getBillsCancel(), HttpStatus.OK);
+    }
+
+    @GetMapping("/get/statistic")
+    public ResponseEntity<List<Statistic>> getStatistic(){
+        return new ResponseEntity<>(billService.statistic(), HttpStatus.OK);
     }
 }

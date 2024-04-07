@@ -4,11 +4,9 @@ import com.pet.dto.request.ProductRequest;
 import com.pet.dto.response.CategoryProductResponse;
 import com.pet.dto.response.ProductResponse;
 import com.pet.entity.Category;
-import com.pet.entity.Color;
 import com.pet.entity.Product;
 import com.pet.exception.NotFoundException;
 import com.pet.repository.ICategoryRepository;
-import com.pet.repository.IColorRepository;
 import com.pet.repository.IProductRepository;
 import com.pet.service.ICategoryService;
 import com.pet.service.IProductService;
@@ -20,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +33,6 @@ public class ProductServiceImpl implements IProductService {
     @Autowired
     private IProductRepository productRepository;
 
-    @Autowired
-    private IColorRepository colorRepository;
 
 
     @Autowired
@@ -63,14 +58,6 @@ public class ProductServiceImpl implements IProductService {
         product.setBought(0L);
         product.setCreatedAt(LocalDateTime.now());
         product.setUpdatedAt(LocalDateTime.now());
-        List<Color> colors = new ArrayList<>();
-        if (request.getColorList() != null){
-            request.getColorList().forEach(c -> {
-                Color color = colorRepository.findColorById(c);
-                colors.add(color);
-            });
-            product.setColorList(colors);
-        }
         try {
             if (request.getFiles() != null){
                 String filename = ImageUtil.storeFile(request.getFiles());
@@ -99,14 +86,6 @@ public class ProductServiceImpl implements IProductService {
         product.setBought(0L);
         product.setProductDescription(request.getProductDescription());
         product.setUpdatedAt(LocalDateTime.now());
-        List<Color> colors = new ArrayList<>();
-        if (request.getColorList() != null){
-            request.getColorList().forEach(c -> {
-                Color color = colorRepository.findColorById(c);
-                colors.add(color);
-            });
-            product.setColorList(colors);
-        }
         try {
             if (request.getFiles() != null){
                 String filename = ImageUtil.storeFile(request.getFiles());

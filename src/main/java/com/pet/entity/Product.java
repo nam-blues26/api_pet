@@ -30,13 +30,6 @@ public class Product extends BaseEntity {
     private Integer sale;
 
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(name = "product_color", //Tạo ra một join Table tên là "address_person"
-            joinColumns = @JoinColumn(name = "product_id"),  // TRong đó, khóa ngoại chính là address_id trỏ tới class hiện tại (Address)
-            inverseJoinColumns = @JoinColumn(name = "color_id") //Khóa ngoại thứ 2 trỏ tới thuộc tính ở dưới (Person)
-    )
-    private List<Color> colorList;
-
     private String image;
 
     @Column(name = "product_description")

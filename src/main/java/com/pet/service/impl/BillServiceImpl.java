@@ -3,6 +3,7 @@ package com.pet.service.impl;
 import com.pet.dto.request.BillDetailRequest;
 import com.pet.dto.request.CheckoutRequest;
 import com.pet.dto.response.CheckoutResponse;
+import com.pet.dto.response.Statistic;
 import com.pet.entity.Bill;
 import com.pet.entity.BillDetail;
 import com.pet.entity.Product;
@@ -19,11 +20,13 @@ import com.pet.service.base.IMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.pet.constant.MessageConstant.*;
 
@@ -98,6 +101,7 @@ public class BillServiceImpl implements IBillService {
     public Boolean acceptBill(Long id) {
         Bill bill = billRepository.findBillById(id);
         bill.setActive(true);
+        bill.setCancel(false);
         billRepository.save(bill);
         return true;
     }
@@ -121,11 +125,12 @@ public class BillServiceImpl implements IBillService {
     }
 
     @Override
-    public List<CheckoutResponse> getAll() {
+    public List<CheckoutResponse> getBillsUnCheck() {
         List<CheckoutResponse> checkoutResponseList = new ArrayList<>();
         List<Bill> bills = billRepository.findBillsUnCheckOrderByCreatedAtNative();
         bills.forEach(b -> {
             CheckoutResponse checkoutResponse = new CheckoutResponse();
+            checkoutResponse.setId(b.getId());
             checkoutResponse.setCreatedAt(b.getCreatedAt());
             checkoutResponse.setUpdatedAt(b.getUpdatedAt());
             checkoutResponse.setCustomerName(b.getCustomerName());
@@ -139,5 +144,57 @@ public class BillServiceImpl implements IBillService {
             checkoutResponseList.add(checkoutResponse);
         });
         return checkoutResponseList;
+    }
+
+    @Override
+    public List<CheckoutResponse> getBillsActive() {
+        List<CheckoutResponse> checkoutResponseList = new ArrayList<>();
+        List<Bill> bills = billRepository.findBillsActiveOrderByCreatedAtNative();
+        bills.forEach(b -> {
+            CheckoutResponse checkoutResponse = new CheckoutResponse();
+            checkoutResponse.setId(b.getId());
+            checkoutResponse.setCreatedAt(b.getCreatedAt());
+            checkoutResponse.setUpdatedAt(b.getUpdatedAt());
+            checkoutResponse.setCustomerName(b.getCustomerName());
+            checkoutResponse.setPhoneNumber(b.getPhoneNumber());
+            checkoutResponse.setAddress(b.getAddress());
+            checkoutResponse.setActive(b.getActive());
+            checkoutResponse.setCancel(b.getCancel());
+            checkoutResponse.setTypePayment(b.getTypePayment().name());
+            checkoutResponse.setTotalPrice(b.getTotalPrice());
+            checkoutResponse.setBillDetails(billDetailRepository.findBillDetailsByBill(b));
+            checkoutResponseList.add(checkoutResponse);
+        });
+        return checkoutResponseList;
+    }
+
+    @Override
+    public List<CheckoutResponse> getBillsCancel() {
+        List<CheckoutResponse> checkoutResponseList = new ArrayList<>();
+        List<Bill> bills = billRepository.findBillsCancelOrderByCreatedAtNative();
+        bills.forEach(b -> {
+            CheckoutResponse checkoutResponse = new CheckoutResponse();
+            checkoutResponse.setId(b.getId());
+            checkoutResponse.setCreatedAt(b.getCreatedAt());
+            checkoutResponse.setUpdatedAt(b.getUpdatedAt());
+            checkoutResponse.setCustomerName(b.getCustomerName());
+            checkoutResponse.setPhoneNumber(b.getPhoneNumber());
+            checkoutResponse.setAddress(b.getAddress());
+            checkoutResponse.setActive(b.getActive());
+            checkoutResponse.setCancel(b.getCancel());
+            checkoutResponse.setTypePayment(b.getTypePayment().name());
+            checkoutResponse.setTotalPrice(b.getTotalPrice());
+            checkoutResponse.setBillDetails(billDetailRepository.findBillDetailsByBill(b));
+            checkoutResponseList.add(checkoutResponse);
+        });
+        return checkoutResponseList;
+    }
+
+    @Override
+    public List<Statistic> statistic() {
+        List<Object[]> results = billRepository.statisticBill();
+        return results.stream()
+                .map(obj -> new Statistic((String)obj[0], (BigDecimal) obj[1], (BigDecimal) obj[2]))
+                .collect(Collectors.toList());
     }
 }
