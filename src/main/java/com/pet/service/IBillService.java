@@ -18,4 +18,5 @@ public interface IBillService {
     public List<CheckoutResponse> getBillsCancel();
 
     public List<Statistic> statistic();
+
 }

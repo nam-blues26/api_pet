@@ -41,4 +41,8 @@ public class Product extends BaseEntity {
     private Long bought;
 
     private String slug;
+
+    @Column(name = "attribute_name")
+    private String attributeName;
+
 }

@@ -63,6 +63,7 @@ public class BillServiceImpl implements IBillService {
         bill.setPhoneNumber(request.getPhoneNumber());
         bill.setAddress(request.getAddress());
         bill.setTypePayment(PaymentEnum.valueOf(request.getTypePayment()));
+        bill.setNote(request.getNote());
         bill.setTotalPrice(request.getTotalPrice());
         bill = billRepository.saveAndFlush(bill);
         for (BillDetailRequest b : request.getBillDetails()) {
@@ -73,6 +74,7 @@ public class BillServiceImpl implements IBillService {
                 billDetail.setQuantity(b.getAddedQuantity());
                 billDetail.setPrice(product.getPriceSale() * b.getAddedQuantity());
                 billDetail.setProduct(product);
+                billDetail.setAttributeName(b.getAttributeName());
                 billDetailRepository.save(billDetail);
                 product.setQuantity(product.getQuantity()-b.getAddedQuantity());
                 product.setBought(product.getBought()+b.getAddedQuantity());
@@ -84,16 +86,20 @@ public class BillServiceImpl implements IBillService {
 
     @Override
     public CheckoutResponse getBillById(Long id) {
-        Bill bill =  billRepository.findBillById(id);
+        Bill b =  billRepository.findBillById(id);
         CheckoutResponse checkoutResponse = new CheckoutResponse();
-        checkoutResponse.setCreatedAt(bill.getCreatedAt());
-        checkoutResponse.setUpdatedAt(bill.getUpdatedAt());
-        checkoutResponse.setCustomerName(bill.getCustomerName());
-        checkoutResponse.setPhoneNumber(bill.getPhoneNumber());
-        checkoutResponse.setAddress(bill.getAddress());
-        checkoutResponse.setTypePayment(bill.getTypePayment().name());
-        checkoutResponse.setTotalPrice(bill.getTotalPrice());
-        checkoutResponse.setBillDetails(billDetailRepository.findBillDetailsByBill(bill));
+        checkoutResponse.setId(b.getId());
+        checkoutResponse.setCreatedAt(b.getCreatedAt());
+        checkoutResponse.setUpdatedAt(b.getUpdatedAt());
+        checkoutResponse.setCustomerName(b.getCustomerName());
+        checkoutResponse.setPhoneNumber(b.getPhoneNumber());
+        checkoutResponse.setAddress(b.getAddress());
+        checkoutResponse.setActive(b.getActive());
+        checkoutResponse.setCancel(b.getCancel());
+        checkoutResponse.setTypePayment(b.getTypePayment().name());
+        checkoutResponse.setTotalPrice(b.getTotalPrice());
+        checkoutResponse.setNote(b.getNote());
+        checkoutResponse.setBillDetails(billDetailRepository.findBillDetailsByBill(b));
         return checkoutResponse;
     }
 
@@ -138,6 +144,7 @@ public class BillServiceImpl implements IBillService {
             checkoutResponse.setAddress(b.getAddress());
             checkoutResponse.setActive(b.getActive());
             checkoutResponse.setCancel(b.getCancel());
+            checkoutResponse.setNote(b.getNote());
             checkoutResponse.setTypePayment(b.getTypePayment().name());
             checkoutResponse.setTotalPrice(b.getTotalPrice());
             checkoutResponse.setBillDetails(billDetailRepository.findBillDetailsByBill(b));
@@ -160,6 +167,7 @@ public class BillServiceImpl implements IBillService {
             checkoutResponse.setAddress(b.getAddress());
             checkoutResponse.setActive(b.getActive());
             checkoutResponse.setCancel(b.getCancel());
+            checkoutResponse.setNote(b.getNote());
             checkoutResponse.setTypePayment(b.getTypePayment().name());
             checkoutResponse.setTotalPrice(b.getTotalPrice());
             checkoutResponse.setBillDetails(billDetailRepository.findBillDetailsByBill(b));
@@ -184,6 +192,7 @@ public class BillServiceImpl implements IBillService {
             checkoutResponse.setCancel(b.getCancel());
             checkoutResponse.setTypePayment(b.getTypePayment().name());
             checkoutResponse.setTotalPrice(b.getTotalPrice());
+            checkoutResponse.setNote(b.getNote());
             checkoutResponse.setBillDetails(billDetailRepository.findBillDetailsByBill(b));
             checkoutResponseList.add(checkoutResponse);
         });
@@ -197,4 +206,5 @@ public class BillServiceImpl implements IBillService {
                 .map(obj -> new Statistic((String)obj[0], (BigDecimal) obj[1], (BigDecimal) obj[2]))
                 .collect(Collectors.toList());
     }
+
 }

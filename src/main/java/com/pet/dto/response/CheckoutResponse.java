@@ -27,5 +27,6 @@ public class CheckoutResponse {
     private String typePayment;
     private Boolean active;
     private Boolean cancel;
+    private String note;
     private List<BillDetail> billDetails;
 }

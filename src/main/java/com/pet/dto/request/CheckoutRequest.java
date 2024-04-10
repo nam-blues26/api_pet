@@ -15,5 +15,6 @@ public class CheckoutRequest {
     private String address;
     private Long totalPrice;
     private String typePayment;
+    private String note;
     private List<BillDetailRequest> billDetails;
 }

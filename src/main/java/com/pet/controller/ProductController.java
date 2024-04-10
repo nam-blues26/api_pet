@@ -1,6 +1,7 @@
 package com.pet.controller;
 
 import com.pet.dto.request.ProductRequest;
+import com.pet.dto.request.SearchRequest;
 import com.pet.dto.response.CategoryProductResponse;
 import com.pet.dto.response.ProductResponse;
 import com.pet.entity.Product;
@@ -81,6 +82,11 @@ public class ProductController {
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<List<Product>> search(@RequestBody SearchRequest request) {
+        return new ResponseEntity<>(productService.search(request), HttpStatus.OK);
     }
 
 }

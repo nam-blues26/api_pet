@@ -22,7 +22,7 @@ public interface IBillRepository extends JpaRepository<Bill, Long> {
     @Query(value = "SELECT * FROM Bill b WHERE b.cancel = true Order By b.updated_at desc", nativeQuery = true)
     List<Bill> findBillsCancelOrderByCreatedAtNative();
 
-    @Query(value = "SELECT thang, SUM(CASE WHEN active = 1 THEN 1 ELSE 0 END) AS so_luong_da_ban,SUM(CASE WHEN cancel = 1 THEN 1 ELSE 0 END) AS so_luong_da_huy " +
-            "FROM ( SELECT DATE_FORMAT(b.updated_at, '%Y-%m') AS thang, active, cancel FROM Bill b ORDER BY thang DESC LIMIT 8) AS subquery GROUP BY thang ORDER BY thang ASC;", nativeQuery = true)
+    @Query(value = "SELECT thang, SUM(CASE WHEN active = 1 and cancel = 0 THEN 1 ELSE 0 END) AS so_luong_da_ban,SUM(CASE WHEN cancel = 1 and active = 0 THEN 1 ELSE 0 END) AS so_luong_da_huy " +
+            "FROM ( SELECT DATE_FORMAT(b.updated_at, '%m-%Y') AS thang, active, cancel FROM Bill b ORDER BY thang DESC ) AS subquery GROUP BY thang ORDER BY thang ASC LIMIT 8;", nativeQuery = true)
     List<Object[]> statisticBill();
 }

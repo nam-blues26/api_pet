@@ -1,5 +1,6 @@
 package com.pet.dto.request;
 
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,7 +22,8 @@ public class ProductRequest {
 
     private Integer sale;
 
-    private List<Long> colorList;
+    private String attributeName;
+
 
     private Long category;
 

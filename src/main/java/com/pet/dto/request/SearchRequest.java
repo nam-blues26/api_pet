@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BillDetailRequest {
-    private Long id;
-    private Integer addedQuantity;
-    private String attributeName;
+public class SearchRequest {
+    private String keyword;
+    private Long category_id;
 }

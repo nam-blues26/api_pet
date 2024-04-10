@@ -1,6 +1,7 @@
 package com.pet.service;
 
 import com.pet.dto.request.ProductRequest;
+import com.pet.dto.request.SearchRequest;
 import com.pet.dto.response.CategoryProductResponse;
 import com.pet.dto.response.ProductResponse;
 import com.pet.entity.Product;
@@ -22,4 +23,6 @@ public interface IProductService {
     List<Product> getProductsBestSeller();
 
     List<Product> getProductsNew();
+
+    List<Product> search(SearchRequest request);
 }

@@ -31,6 +31,11 @@ public class BillController {
         return new ResponseEntity<>(billService.acceptBill(id), HttpStatus.OK);
     }
 
+    @GetMapping("/get/{id}")
+    public ResponseEntity<CheckoutResponse> getBill(@PathVariable Long id){
+        return new ResponseEntity<>(billService.getBillById(id), HttpStatus.OK);
+    }
+
     @GetMapping("/cancel/{id}")
     public ResponseEntity<Boolean> cancelBill(@PathVariable Long id){
         return new ResponseEntity<>(billService.cancelBill(id), HttpStatus.OK);

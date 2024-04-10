@@ -1,6 +1,7 @@
 package com.pet.service.impl;
 
 import com.pet.dto.request.ProductRequest;
+import com.pet.dto.request.SearchRequest;
 import com.pet.dto.response.CategoryProductResponse;
 import com.pet.dto.response.ProductResponse;
 import com.pet.entity.Category;
@@ -56,6 +57,7 @@ public class ProductServiceImpl implements IProductService {
         long roundedPriceSale = Math.round(request.getPrice() * (100 - request.getSale()) / 100.0);
         product.setPriceSale(roundedPriceSale);
         product.setBought(0L);
+        product.setAttributeName(request.getAttributeName());
         product.setCreatedAt(LocalDateTime.now());
         product.setUpdatedAt(LocalDateTime.now());
         try {
@@ -85,6 +87,7 @@ public class ProductServiceImpl implements IProductService {
         product.setPriceSale(roundedPriceSale);
         product.setBought(0L);
         product.setProductDescription(request.getProductDescription());
+        product.setAttributeName(request.getAttributeName());
         product.setUpdatedAt(LocalDateTime.now());
         try {
             if (request.getFiles() != null){
@@ -140,6 +143,20 @@ public class ProductServiceImpl implements IProductService {
     @Override
     public List<Product> getProductsNew() {
         return productRepository.findProductOrderByUpdatedAtNative();
+    }
+
+    @Override
+    public List<Product> search(SearchRequest request) {
+        if (request.getKeyword() != null && request.getCategory_id() != 0){
+            return productRepository.searchByKeywordAndCate(request.getKeyword(), request.getCategory_id());
+        } else if (request.getKeyword() != null && request.getCategory_id() == 0) {
+            return productRepository.searchByKeyword(request.getKeyword());
+        } else if (request.getKeyword() == null && request.getCategory_id() != 0) {
+            return productRepository.searchByCate(request.getCategory_id());
+        }
+        else {
+            return productRepository.findByOrderByIdDesc();
+        }
     }
 
 }

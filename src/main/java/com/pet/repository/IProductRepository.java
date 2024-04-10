@@ -4,6 +4,7 @@ import com.pet.entity.Category;
 import com.pet.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,4 +27,13 @@ public interface IProductRepository extends JpaRepository<Product,Long> {
 
     @Query(value = "SELECT * FROM PRODUCT p Order By p.updated_at desc Limit 5", nativeQuery = true)
     List<Product> findProductOrderByUpdatedAtNative();
+
+    @Query(value = "SELECT * FROM PRODUCT p WHERE p.product_name LIKE %?1% ORDER BY p.updated_at DESC", nativeQuery = true)
+    List<Product> searchByKeyword(String keyword);
+
+    @Query(value = "SELECT * FROM PRODUCT p WHERE p.category_id = :category_id ORDER BY p.updated_at DESC", nativeQuery = true)
+    List<Product> searchByCate(@Param("category_id") Long category_id);
+    @Query(value = "SELECT * FROM PRODUCT p WHERE p.product_name LIKE %?1% AND p.category_id = ?2 ORDER BY p.updated_at DESC", nativeQuery = true)
+    List<Product> searchByKeywordAndCate(String keyword, Long category_id);
+
 }
