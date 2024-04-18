@@ -137,12 +137,12 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public List<Product> getProductsBestSeller() {
-        return productRepository.findProductBestSeller();
+        return productRepository.findTop5ByOrderByBoughtDesc();
     }
 
     @Override
     public List<Product> getProductsNew() {
-        return productRepository.findProductOrderByUpdatedAtNative();
+        return productRepository.findTop5ByOrderByUpdatedAtDesc();
     }
 
     @Override
