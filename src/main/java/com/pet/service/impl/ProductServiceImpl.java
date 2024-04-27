@@ -53,6 +53,7 @@ public class ProductServiceImpl implements IProductService {
         product.setQuantity(request.getQuantity());
         product.setCategory(productCategory);
         product.setSlug(slug);
+        product.setActive(true);
         product.setProductDescription(request.getProductDescription());
         long roundedPriceSale = Math.round(request.getPrice() * (100 - request.getSale()) / 100.0);
         product.setPriceSale(roundedPriceSale);
@@ -114,7 +115,7 @@ public class ProductServiceImpl implements IProductService {
                 .id(category.getId())
                 .categoryName(category.getCategoryName())
                 .slug(category.getSlug())
-                .products(MapperUtils.entitiesToDTOs(productRepository.findProductsByCategory(category), ProductResponse.class)).build();
+                .products(MapperUtils.entitiesToDTOs(productRepository.findProductsByCategoryAndActiveIsTrue(category), ProductResponse.class)).build();
     }
 
     @Override
@@ -126,23 +127,27 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public List<Product> getAll() {
-        return productRepository.findByOrderByIdDesc();
+        return productRepository.findByActiveIsTrueOrderByIdDesc();
     }
 
     @Override
     public Boolean deleteProduct(Long id) {
-        productRepository.deleteById(id);
+        Product product = productRepository.findProductByIdAndActiveIsTrue(id).orElseThrow(
+                () -> new NotFoundException(messageService.getMessage(NOTFOUND_PRODUCT_EXCEPTION))
+        );
+        product.setActive(false);
+        productRepository.save(product);
         return true;
     }
 
     @Override
     public List<Product> getProductsBestSeller() {
-        return productRepository.findTop5ByOrderByBoughtDesc();
+        return productRepository.findTop5ByActiveIsTrueOrderByBoughtDesc();
     }
 
     @Override
     public List<Product> getProductsNew() {
-        return productRepository.findTop5ByOrderByUpdatedAtDesc();
+        return productRepository.findTop5ByActiveIsTrueOrderByUpdatedAtDesc();
     }
 
     @Override
@@ -155,7 +160,7 @@ public class ProductServiceImpl implements IProductService {
             return productRepository.searchByCate(request.getCategory_id());
         }
         else {
-            return productRepository.findByOrderByIdDesc();
+            return productRepository.findByActiveIsTrueOrderByIdDesc();
         }
     }
 
